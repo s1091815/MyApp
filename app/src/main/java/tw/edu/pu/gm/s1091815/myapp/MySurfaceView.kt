@@ -3,18 +3,24 @@ package tw.edu.pu.gm.s1091815.myapp
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 class MySurfaceView(context: Context?, attrs: AttributeSet?) : SurfaceView(context, attrs),
-    SurfaceHolder.Callback {
+    SurfaceHolder.Callback, GestureDetector.OnGestureListener {
     var surfaceHolder: SurfaceHolder
     var BG: Bitmap
     var BGmoveX:Int = 0
+    var fly1:plane
+    var gDetector: GestureDetector
 
     init {
         surfaceHolder = getHolder()
         BG = BitmapFactory.decodeResource(getResources(), R.drawable.background)
         surfaceHolder.addCallback(this)
+        fly1 = plane(context!!)
+        gDetector = GestureDetector(context, this)
     }
     override fun surfaceCreated(p0: SurfaceHolder) {
         var canvas: Canvas = surfaceHolder.lockCanvas()
@@ -50,5 +56,36 @@ class MySurfaceView(context: Context?, attrs: AttributeSet?) : SurfaceView(conte
         paint.color = Color.BLUE
         paint.textSize = 50f
         canvas.drawText("射擊遊戲(作者 : 張家豪)", 50f,50f, paint)
+        fly1.draw(canvas)
+    }
+
+    override fun onDown(p0: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onShowPress(p0: MotionEvent?) {
+
+    }
+
+    override fun onSingleTapUp(p0: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, p2: Float, p3: Float): Boolean {
+        fly1.y = e2!!.y.toInt() - fly1.h/2
+        return true
+    }
+
+    override fun onLongPress(p0: MotionEvent?) {
+
+    }
+
+    override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
+        return true
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        gDetector.onTouchEvent(event)
+        return true
     }
 }
